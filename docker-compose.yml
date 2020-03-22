@@ -4,9 +4,6 @@ volumes:
   postgres_data:
   pgadmin_data:
       driver: local
-networks:
-  devnet:
-    driver: bridge
 services:
   postgres:
       image: postgres
@@ -23,8 +20,6 @@ services:
         ALLOW_IP_RANGE: 0.0.0.0/0
       ports:
         - "${POSTGRES_PORT:-5432}:5432"
-      networks:
-        - devnet
   pgadmin:
       container_name: pgadmin_container
       image: dpage/pgadmin4
@@ -35,8 +30,6 @@ services:
         - pgadmin_data:/root/.pgadmin
       ports:
         - "${PGADMIN_PORT:-5050}:80"
-      networks:
-        - devnet
       restart: unless-stopped
       depends_on:
         - postgres
@@ -59,8 +52,6 @@ services:
         - 8080:8080
       volumes:
         - ./keycloak/configuration/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
-      networks:
-        - devnet
       depends_on:
         - postgres
 
