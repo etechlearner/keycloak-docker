@@ -2,37 +2,17 @@ version: '3'
 
 volumes:
   postgres_data:
-  pgadmin_data:
       driver: local
 services:
   postgres:
       image: postgres
       restart: always
       volumes:
-        - postgres_data:/var/lib/postgresql/data
-        - $PWD/postgres.conf:/etc/postgresql/postgresql.conf
-      command: postgres -c config_file=/etc/postgresql/postgresql.conf
+        - ./pg_data_keycloak:/var/lib/postgresql/data
       environment:
         POSTGRES_DB: keycloak
         POSTGRES_USER: keycloak
         POSTGRES_PASSWORD: password
-        PGDATA: /data/postgres
-        ALLOW_IP_RANGE: 0.0.0.0/0
-      ports:
-        - "${POSTGRES_PORT:-5432}:5432"
-  pgadmin:
-      container_name: pgadmin_container
-      image: dpage/pgadmin4
-      environment:
-        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      volumes:
-        - pgadmin_data:/root/.pgadmin
-      ports:
-        - "${PGADMIN_PORT:-5050}:80"
-      restart: unless-stopped
-      depends_on:
-        - postgres
   keycloak:
       image: jboss/keycloak
       restart: always
@@ -50,10 +30,5 @@ services:
         #JDBC_PARAMS: "ssl=true"
       ports:
         - 8080:8080
-      volumes:
-        - ./keycloak/configuration/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
       depends_on:
         - postgres
-
-
-
