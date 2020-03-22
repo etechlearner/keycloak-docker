@@ -4,6 +4,9 @@ volumes:
   postgres_data:
   pgadmin_data:
       driver: local
+networks:
+  devnet:
+    driver: bridge
 services:
   postgres:
       image: postgres
@@ -60,9 +63,6 @@ services:
         - devnet
       depends_on:
         - postgres
-  networks:
-    devnet:
-      driver: bridge
 
 
 
